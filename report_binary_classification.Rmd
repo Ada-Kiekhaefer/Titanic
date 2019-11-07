@@ -1,0 +1,80 @@
+---
+title: "Summary report of binary classification"
+author: "Ada Kiekhaefer"
+date: "11/5/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exploratory Data Analysis
+
+Exploratory data analysis of Titanic data.
+
+```{r source_explore, include = FALSE}
+source("exploratory_analysis.R")
+```
+## Summary statistics of train dataset
+Summary statistics of the train dataset are shown in the table below. The data consist of `r nrow(train_all_column)` observations and
+
+```{r, echo=FALSE}
+summary(train_all_column)
+```
+## Survival rate of male and female
+
+The following plot shows the relationship between the numbers of survivors versus genders. 
+
+```{r survival_vs_gender, echo=FALSE}
+ggplot(train_all_column, aes(x = factor(Sex))) +
+  geom_bar() +
+  facet_wrap(~Survived, labeller = as_labeller(c(`0` = "Not survived", `1` = "Survived"))) +
+  labs(title = "Survival rate between male and female") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+## Histogram of age versus survival counts
+```{r survival_vs_age, echo=FALSE, warning=FALSE}
+ggplot(train_all_column, aes(x = Age)) +
+  geom_histogram() +
+  labs(title = "Histogram of age versus survival counts") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+## Percent survival of male and female among different age groups
+The following table and plots show percent survival of male and female among differrent age groups: 0 - 15, 15 - 50, >50 years old. 
+```{r survival_vs_age_group, echo=FALSE}
+percent_survived %>% 
+  arrange(Sex)
+
+ggplot(percent_survived) +
+  geom_bar(aes(x=age_group,y=percent_survived),stat="identity") +
+  facet_wrap(~Sex) +
+  labs(title = "Percent survival of male and female among different age groups") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+## Plot of survival count and passenger class
+```{r pclass_plot, echo=FALSE}
+ggplot(train_all_column, aes(x=Pclass)) +
+  geom_bar() +
+  facet_wrap(~Survived, labeller = as_labeller(c(`0` = "Not survived", `1` = "Survived"))) +
+  labs(title = "Survival count and passenger class (Pclass)") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+## Summary statistics of test dataset
+```{r, echo=FALSE}
+newdata_all_column <- read_csv("test.csv")
+summary(newdata_all_column)
+```
+
+# Logistic regression of training data
+
+# Prediction of test data
+
+## Data munging 
+As seen from the previous figures, age groups, genders, and passenger classes have some correlation with survival counts. However, there are 86 missing value of Ages variables out of 418 observations. Here, we imputed the NA ages with the median value of age.    
+
