@@ -1,1 +1,1 @@
-# Titanic
+# binary classification
